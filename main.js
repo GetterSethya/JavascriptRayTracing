@@ -1,10 +1,31 @@
 function ray_color(r) {
+  let t = hit_sphere(new Vec3(0, 0, -1), 0.5, r);
+
+  if (t > 0.0) {
+    const n = r.pointAt(t).subtract(new Vec3(0, 0, -1)).unit;
+
+    return new Vec3(n.x + 1, n.y + 1, n.z + 1).multiply(0.5);
+  }
+
   let unit_direction = r.direction.unit;
-  let t = 0.5 * (unit_direction.y + 1.0);
+  t = 0.5 * (unit_direction.y + 1.0);
   let white = new Vec3(1.0, 1.0, 1.0);
   let blue = new Vec3(0.5, 0.7, 1.0);
 
   return white.multiply(1.0 - t).add(blue.multiply(t));
+}
+
+function hit_sphere(center, radius, r) {
+  const oc = r.origin.subtract(center);
+  const a = r.direction.dot(r.direction);
+  const b = 2.0 * oc.dot(r.direction);
+  const c = oc.dot(oc) - radius * radius;
+  const discriminant = b * b - 4 * a * c;
+  if (discriminant < 0) {
+    return -1.0;
+  } else {
+    return (-b - Math.sqrt(discriminant)) / (2.0 * a);
+  }
 }
 
 //image
