@@ -32,6 +32,7 @@ function hit_sphere(center, radius, r) {
 const aspect_ratio = 16.0 / 9.0;
 const width = 512;
 const height = width / aspect_ratio;
+const samples_per_pixel = 100;
 
 //canvas
 const canvas = document.getElementById("main_canvas");
@@ -52,31 +53,24 @@ let ppm_body;
 let arrppm = [];
 
 //camera
-const viewport_height = 2.0;
-const viewport_width = aspect_ratio * viewport_height;
-const focal_length = 1.0;
+const cam = new Camera();
 
-const origin = new Vec3(0, 0, 0);
-const horizontal = new Vec3(viewport_width, 0, 0);
-const vertical = new Vec3(0, viewport_height, 0);
-const lower_left_corner = origin
-    .subtract(horizontal.multiply(0.5))
-    .subtract(vertical.multiply(0.5))
-    .subtract(new Vec3(0, 0, focal_length));
-
-for (let j = height; j >= 0; j--) {
+for (let j = height - 1; j >= 0; j--) {
     for (let i = 0; i < width; i++) {
-        const u = i / (width - 1);
-        const v = j / (height - 1);
-        const direction = lower_left_corner
-            .add(horizontal.multiply(u))
-            .add(vertical.multiply(v))
-            .subtract(origin);
-        const r = new Ray(origin, direction);
-        const color = ray_color(r, world);
-        const ir = Math.floor(255.999 * color.x);
-        const ig = Math.floor(255.999 * color.y);
-        const ib = Math.floor(255.999 * color.z);
+        let pixel_color = new Vec3(0, 0, 0);
+
+        for (let s = 0; s < samples_per_pixel; s++) {
+            const u = (i + random_double()) / (width - 1);
+            const v = (j + random_double()) / (height - 1);
+            const r = cam.get_ray(u, v);
+            pixel_color = pixel_color.add(ray_color(r, world));
+        }
+        const scale = 1.0 / samples_per_pixel;
+        const scaled_color = pixel_color.multiply(scale);
+
+        const ir = Math.floor(255.999 * clamp(scaled_color.x, 0.0, 0.999));
+        const ig = Math.floor(255.999 * clamp(scaled_color.y, 0.0, 0.999));
+        const ib = Math.floor(255.999 * clamp(scaled_color.z, 0.0, 0.999));
 
         if (ppm_body == undefined) {
             ppm_body = `${ir} ${ig} ${ib}\n`;
