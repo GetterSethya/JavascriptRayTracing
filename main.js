@@ -1,19 +1,21 @@
+const width = 512;
+const height = 512;
 const canvas = document.getElementById("main_canvas");
-canvas.setAttribute("width", innerWidth);
-canvas.setAttribute("height", innerHeight);
+canvas.setAttribute("width", width);
+canvas.setAttribute("height", height);
 const ctx = canvas.getContext("2d");
 
 ctx.fillStyle = "#000000";
-ctx.fillRect(0, 0, innerWidth, innerHeight);
+ctx.fillRect(0, 0, width, height);
 
-let imageData = new ImageData(innerWidth, innerHeight);
+let imageData = new ImageData(width, height);
 let ppm_body;
 let arrppm = [];
 
-for (let j = innerHeight; j >= 0; j--) {
-  for (let i = 0; i < innerWidth; i++) {
-    const r = i / (innerWidth - 1);
-    const g = j / (innerHeight - 1);
+for (let j = height; j >= 0; j--) {
+  for (let i = 0; i < width; i++) {
+    const r = i / (width - 1);
+    const g = j / (height - 1);
     const b = 0.25;
 
     if (ppm_body == undefined) {
