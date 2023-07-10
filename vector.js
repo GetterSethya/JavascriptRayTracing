@@ -1,75 +1,75 @@
 class Vec3 {
   constructor(x = 0.0, y = 0.0, z = 0.0) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+    this._x = x;
+    this._y = y;
+    this._z = z;
   }
 
   get x() {
-    return this.x;
+    return this._x;
   }
   get y() {
-    return this.y;
+    return this._y;
   }
   get z() {
-    return this.z;
+    return this._z;
   }
 
-  set x(x) {
-    return (this.x = x);
+  set x(val) {
+    return (this._x = val);
   }
-  set y(y) {
-    return (this.y = y);
+  set y(val) {
+    return (this._y = val);
   }
-  set z(z) {
-    return (this.z = z);
+  set z(val) {
+    return (this._z = val);
   }
 
   get negate() {
-    return new Vec3(-this.x, -this.y, -this.z);
+    return new Vec3(-this._x, -this._y, -this._z);
   }
 
   add(v) {
     if (v instanceof Vec3) {
-      return new Vec3(this.x + v.x, this.y + v.y, this.z + v.z);
+      return new Vec3(this._x + v.x, this._y + v.y, this._z + v.z);
     } else {
-      return new Vec3(this.x + v, this.y + v, this.z + v);
+      return new Vec3(this._x + v, this._y + v, this._z + v);
     }
   }
 
-  sub(v) {
+  subtract(v) {
     if (v instanceof Vec3) {
-      return new Vec3(this.x - v.x, this.y - v.y, this.z - v.z);
+      return new Vec3(this._x - v.x, this._y - v.y, this._z - v.z);
     } else {
-      return new Vec3(this.x - v, this.y - v, this.z - v);
+      return new Vec3(this._x - v, this._y - v, this._z - v);
     }
   }
 
   multiply(v) {
     if (v instanceof Vec3) {
-      return new Vec3(this.x * v.x, this.y * v.y, this.z * v.z);
+      return new Vec3(this._x * v.x, this._y * v.y, this._z * v.z);
     } else {
-      return new Vec3(this.x * v, this.y * v, this.z * v);
+      return new Vec3(this._x * v, this._y * v, this._z * v);
     }
   }
 
   divide(v) {
     if (v instanceof Vec3) {
-      return new Vec3(this.x / v.x, this.y / v.y, this.z / v.z);
+      return new Vec3(this._x / v.x, this._y / v.y, this._z / v.z);
     } else {
-      return new Vec3(this.x / v, this.y / v, this.z / v);
+      return new Vec3(this._x / v, this._y / v, this._z / v);
     }
   }
 
   dot(v) {
-    return this.x * v.x + this.y * v.y + this.z * v.z;
+    return this._x * v.x + this._y * v.y + this._z * v.z;
   }
 
   cross(v) {
     return new Vec3(
-      this.y * v.z - this.z * v.y,
-      this.z * v.x - this.x * v.z,
-      this.x * v.y - this.y * v.x
+      this._y * v.z - this._z * v.y,
+      this._z * v.x - this._x * v.z,
+      this._x * v.y - this._y * v.x
     );
   }
 
@@ -78,9 +78,14 @@ class Vec3 {
   }
 
   get unit() {
-    return this.divide(this.length());
+    return this.divide(this.length);
   }
+
   get squaredLength() {
-    return this.x * this.x + this.y * this.y + this.z * this.z;
+    return this._x * this._x + this._y * this._y + this._z * this._z;
+  }
+
+  toString() {
+    return String(this._x + "," + this._y + "," + this._z);
   }
 }

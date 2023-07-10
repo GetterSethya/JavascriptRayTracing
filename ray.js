@@ -1,26 +1,27 @@
 class Ray extends Vec3 {
   constructor(origin, direction) {
-    this.origin = new Vec3(origin);
-    this.direction = new Vec3(direction);
+    super();
+    this._origin = origin;
+    this._direction = direction;
   }
 
   get origin() {
-    return this.origin;
+    return this._origin;
   }
 
   get direction() {
-    return this.direction;
+    return this._direction;
   }
 
   set origin(v) {
-    this.origin = v;
+    this._origin = v;
   }
 
   set direction(v) {
-    this.direction = v;
+    this._direction = v;
   }
 
   pointAt(pos) {
-    return this.origin.add(this.direction.multiply(pos));
+    return this._origin.add(this._direction.multiply(pos));
   }
 }
