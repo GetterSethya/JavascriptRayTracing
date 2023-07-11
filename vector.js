@@ -88,4 +88,37 @@ class Vec3 {
     toString() {
         return String(this._x + "," + this._y + "," + this._z);
     }
+
+    static random() {
+        return new Vec3(random_double(), random_double(), random_double());
+    }
+
+    static randomMinMax(min, max) {
+        return new Vec3(
+            random_double_mm(min, max),
+            random_double_mm(min, max),
+            random_double_mm(min, max)
+        );
+    }
+
+    static randomInUnitSphere() {
+        while (true) {
+            const p = Vec3.randomMinMax(-1, 1);
+            if (p.squaredLength >= 1) continue;
+            return p;
+        }
+    }
+
+    static random_unit_vector() {
+        return Vec3.randomInUnitSphere().unit;
+    }
+
+    static randomInHemisphere(normal) {
+        const in_unit_sphere = Vec3.randomInUnitSphere();
+        if (in_unit_sphere.dot(normal) > 0) {
+            return in_unit_sphere;
+        } else {
+            return in_unit_sphere.negate;
+        }
+    }
 }

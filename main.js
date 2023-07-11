@@ -1,10 +1,15 @@
-function ray_color(r, world) {
+function ray_color(r, world, depth) {
     const rec = new HitRecord();
 
-    if (world.hit(r, 0, Infinity, rec)) {
-        const normal = rec.normal;
-        const white = new Vec3(0.5, 0.5, 0.5);
-        return normal.multiply(0.5).add(white);
+    if (depth <= 0) {
+        return new Vec3(0, 0, 0);
+    }
+
+    if (world.hit(r, 0.001, Infinity, rec)) {
+        const target = rec.p.add(Vec3.randomInHemisphere(rec.normal));
+        const reflectedRay = new Ray(rec.p, target.subtract(rec.p));
+
+        return ray_color(reflectedRay, world, depth - 1).multiply(0.5);
     }
 
     let unit_direction = r.direction.unit;
@@ -33,6 +38,7 @@ const aspect_ratio = 16.0 / 9.0;
 const width = 512;
 const height = width / aspect_ratio;
 const samples_per_pixel = 100;
+const max_depth = 50;
 
 //canvas
 const canvas = document.getElementById("main_canvas");
@@ -63,14 +69,20 @@ for (let j = height - 1; j >= 0; j--) {
             const u = (i + random_double()) / (width - 1);
             const v = (j + random_double()) / (height - 1);
             const r = cam.get_ray(u, v);
-            pixel_color = pixel_color.add(ray_color(r, world));
+            pixel_color = pixel_color.add(ray_color(r, world, max_depth));
         }
         const scale = 1.0 / samples_per_pixel;
         const scaled_color = pixel_color.multiply(scale);
 
-        const ir = Math.floor(255.999 * clamp(scaled_color.x, 0.0, 0.999));
-        const ig = Math.floor(255.999 * clamp(scaled_color.y, 0.0, 0.999));
-        const ib = Math.floor(255.999 * clamp(scaled_color.z, 0.0, 0.999));
+        const ir = Math.floor(
+            255.999 * clamp(Math.sqrt(scaled_color.x), 0.0, 0.999)
+        );
+        const ig = Math.floor(
+            255.999 * clamp(Math.sqrt(scaled_color.y), 0.0, 0.999)
+        );
+        const ib = Math.floor(
+            255.999 * clamp(Math.sqrt(scaled_color.z), 0.0, 0.999)
+        );
 
         if (ppm_body == undefined) {
             ppm_body = `${ir} ${ig} ${ib}\n`;
