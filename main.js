@@ -49,11 +49,15 @@ ctx.fillRect(0, 0, width, height);
 //world
 let world = new HittableList();
 
-let material_ground = new Metal(new Vec3(0.8, 0.8, 0.8));
-let material_center = new Lambertian(new Vec3(0.7, 0.7, 0.7));
+let material_ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
+let material_center = new Lambertian(new Vec3(1, 0.1, 0.1));
+let material_left = new Metal(new Vec3(0.8, 0.8, 0.8), 0.3);
+let material_right = new Metal(new Vec3(0.8, 0.6, 0.2), 1.0);
 
-world.add(new Sphere(new Vec3(0, 0, -1), 0.5, material_center));
 world.add(new Sphere(new Vec3(0, -100.5, -1), 100, material_ground));
+world.add(new Sphere(new Vec3(0, 0, -1), 0.5, material_center));
+world.add(new Sphere(new Vec3(-1.0, 0.0, -1.0), 0.5, material_left));
+world.add(new Sphere(new Vec3(1.0, 0.0, -1.0), 0.5, material_right));
 
 let imageData = new ImageData(width, height);
 let ppm_body;

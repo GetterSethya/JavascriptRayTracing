@@ -1,7 +1,8 @@
 class Metal extends Material {
-    constructor(albedo) {
+    constructor(albedo, fuzz) {
         super();
         this._albedo = albedo;
+        this._fuzz = fuzz < 1 ? fuzz : 1;
     }
 
     get albedo() {
@@ -14,7 +15,10 @@ class Metal extends Material {
     scatter(r_in, rec, attenuation, scattered) {
         const reflected = Vec3.reflect(r_in.direction, rec.normal);
         scattered.origin = rec.p;
-        scattered.direction = reflected;
+        scattered.direction = reflected.add(
+            Vec3.randomInUnitSphere().multiply(this._fuzz)
+        );
+
         attenuation.x = this._albedo.x;
         attenuation.y = this._albedo.y;
         attenuation.z = this._albedo.z;
