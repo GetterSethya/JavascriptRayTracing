@@ -89,6 +89,19 @@ class Vec3 {
         return String(this._x + "," + this._y + "," + this._z);
     }
 
+    near_zero() {
+        const s = 1e-8;
+        return (
+            Math.abs(this._x) < s &&
+            Math.abs(this._y) < s &&
+            Math.abs(this._z) < s
+        );
+    }
+
+    static reflect(v, n) {
+        return v.subtract(n.multiply(2 * v.dot(n)));
+    }
+
     static random() {
         return new Vec3(random_double(), random_double(), random_double());
     }

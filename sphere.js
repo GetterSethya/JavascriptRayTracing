@@ -1,8 +1,9 @@
 class Sphere extends Hittable {
-    constructor(center, radius) {
+    constructor(center, radius, material) {
         super();
         this._center = center;
         this._radius = radius;
+        this._material = material;
     }
 
     get center() {
@@ -11,7 +12,13 @@ class Sphere extends Hittable {
     get radius() {
         return this._radius;
     }
+    get material() {
+        return this._material;
+    }
 
+    set material(mat) {
+        return (this._material = mat);
+    }
     set center(value) {
         this._center = value;
     }
@@ -35,6 +42,7 @@ class Sphere extends Hittable {
                     .subtract(this._center)
                     .divide(this._radius);
                 rec.set_face_normal(r, outward_normal);
+                rec.material = this._material;
                 return true;
             }
             temp = (-b + Math.sqrt(discriminant)) / a;
@@ -44,8 +52,8 @@ class Sphere extends Hittable {
                 const outward_normal = rec.p
                     .subtract(this._center)
                     .divide(this._radius);
-
                 rec.set_face_normal(r, outward_normal);
+                rec.material = this._material;
                 return true;
             }
         }

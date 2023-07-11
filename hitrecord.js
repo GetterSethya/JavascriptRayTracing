@@ -4,6 +4,7 @@ class HitRecord {
         this._normal;
         this._t;
         this._front_face;
+        this._material;
     }
 
     get p() {
@@ -18,6 +19,14 @@ class HitRecord {
 
     get front_face() {
         return this._front_face;
+    }
+
+    get material() {
+        return this._material;
+    }
+
+    set material(mat) {
+        this._material = mat;
     }
 
     set front_face(value) {

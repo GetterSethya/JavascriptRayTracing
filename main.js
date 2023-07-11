@@ -6,10 +6,20 @@ function ray_color(r, world, depth) {
     }
 
     if (world.hit(r, 0.001, Infinity, rec)) {
-        const target = rec.p.add(Vec3.randomInHemisphere(rec.normal));
-        const reflectedRay = new Ray(rec.p, target.subtract(rec.p));
+        let scattered = new Ray(new Vec3(0, 0, 0), new Vec3(0, 0, 0));
+        let attenuation = new Vec3(0, 0, 0);
 
-        return ray_color(reflectedRay, world, depth - 1).multiply(0.5);
+        if (rec.material.scatter(r, rec, attenuation, scattered)) {
+            const color = ray_color(scattered, world, depth - 1);
+
+            return new Vec3(
+                attenuation.x * color.x,
+                attenuation.y * color.y,
+                attenuation.z * color.z
+            );
+        }
+
+        return new Vec3(0, 0, 0);
     }
 
     let unit_direction = r.direction.unit;
@@ -20,25 +30,12 @@ function ray_color(r, world, depth) {
     return white.multiply(1.0 - t).add(blue.multiply(t));
 }
 
-function hit_sphere(center, radius, r) {
-    const oc = r.origin.subtract(center);
-    const a = r.direction.squaredLength;
-    const half_b = oc.dot(r.direction);
-    const c = oc.squaredLength - radius * radius;
-    const discriminant = half_b * half_b - a * c;
-    if (discriminant < 0) {
-        return -1.0;
-    } else {
-        return (-half_b - Math.sqrt(discriminant)) / a;
-    }
-}
-
 //image
 const aspect_ratio = 16.0 / 9.0;
 const width = 512;
 const height = width / aspect_ratio;
-const samples_per_pixel = 100;
-const max_depth = 50;
+const samples_per_pixel = 30;
+const max_depth = 10;
 
 //canvas
 const canvas = document.getElementById("main_canvas");
@@ -51,8 +48,12 @@ ctx.fillRect(0, 0, width, height);
 
 //world
 let world = new HittableList();
-world.add(new Sphere(new Vec3(0, 0, -1), 0.5));
-world.add(new Sphere(new Vec3(0, -100.5, -1), 100));
+
+let material_ground = new Metal(new Vec3(0.8, 0.8, 0.8));
+let material_center = new Lambertian(new Vec3(0.7, 0.7, 0.7));
+
+world.add(new Sphere(new Vec3(0, 0, -1), 0.5, material_center));
+world.add(new Sphere(new Vec3(0, -100.5, -1), 100, material_ground));
 
 let imageData = new ImageData(width, height);
 let ppm_body;
