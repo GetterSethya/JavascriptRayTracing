@@ -20,14 +20,17 @@ class HittableList extends Hittable {
         this._objects = [];
     }
 
-    hit(r, t_min, t_max, rec) {
+    hit(r, ray_t, rec) {
+        // let temp_rec = new HitRecord();
         let hitAnything = false;
-        let closestSoFar = t_max;
+        let closestSoFar = ray_t.max;
 
         for (const object of this._objects) {
-            if (object.hit(r, t_min, closestSoFar, rec)) {
+            if (object.hit(r, new Interval(ray_t.min, closestSoFar), rec)) {
                 hitAnything = true;
+                // closestSoFar = temp_rec.t;
                 closestSoFar = rec.t;
+                // rec = temp_rec;
             }
         }
 

@@ -1,11 +1,9 @@
 function ray_color(r, world, depth) {
-    const rec = new HitRecord();
-
     if (depth <= 0) {
         return new Vec3(0, 0, 0);
     }
-
-    if (world.hit(r, 0.001, Infinity, rec)) {
+    const rec = new HitRecord();
+    if (world.hit(r, new Interval(0.001, Infinity), rec)) {
         let scattered = new Ray(new Vec3(0, 0, 0), new Vec3(0, 0, 0));
         let attenuation = new Vec3(0, 0, 0);
 
@@ -34,7 +32,7 @@ function ray_color(r, world, depth) {
 const aspect_ratio = 16.0 / 9.0;
 const width = 512;
 const height = width / aspect_ratio;
-const samples_per_pixel = 30;
+const samples_per_pixel = 50;
 const max_depth = 10;
 
 //canvas

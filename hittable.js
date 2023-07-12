@@ -1,5 +1,5 @@
 class Hittable {
-    hit(r, t_min, t_max, rec) {
+    hit(r, ray_t, rec) {
         throw new Error("Hit method not implemented in subclass");
     }
 }
