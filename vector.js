@@ -103,7 +103,7 @@ class Vec3 {
     }
 
     static refract(uv, n, etai_over_etat) {
-        let cos_theta = Math.min(uv.negate().dot(n), 1.0);
+        let cos_theta = Math.min(uv.negate.dot(n), 1.0);
         let r_out_perp = uv.add(n.multiply(cos_theta)).multiply(etai_over_etat);
         let r_out_parallel = n.multiply(
             -Math.sqrt(Math.abs(1.0 - r_out_perp.squaredLength))
