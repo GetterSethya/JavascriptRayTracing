@@ -1,7 +1,11 @@
 class Camera {
-    constructor() {
+    constructor(vfov = 40) {
+        this._vfov = vfov;
         const aspect_ratio = 16.0 / 9.0;
-        const viewport_height = 2.0;
+        const theta = degrees_to_radians(this._vfov);
+        const h = Math.tan(theta / 2);
+
+        const viewport_height = 2.0 * h;
         const viewport_width = aspect_ratio * viewport_height;
         const focal_length = 1.0;
 
@@ -13,7 +17,9 @@ class Camera {
             .subtract(this._vertical.multiply(0.5))
             .subtract(new Vec3(0, 0, focal_length));
     }
-
+    get vfov() {
+        return this._vfov;
+    }
     get origin() {
         return this._origin;
     }
@@ -25,6 +31,10 @@ class Camera {
     }
     get lower_left_corner() {
         return this._lower_left_corner;
+    }
+
+    set vfov(fov) {
+        this._vfov = fov;
     }
 
     set origin(vector) {
