@@ -28,12 +28,59 @@ function ray_color(r, world, depth) {
     return white.multiply(1.0 - t).add(blue.multiply(t));
 }
 
+function random_scene() {
+    const world = new HittableList();
+
+    const ground_material = new Lambertian(new Vec3(0.5, 0.5, 0.5));
+    world.add(new Sphere(new Vec3(0, -1000, 0), 1000, ground_material));
+
+    for (let a = -11; a < 11; a++) {
+        for (let b = -11; b < 11; b++) {
+            const chose_mat = random_double();
+            const center = new Vec3(
+                a + 0.9 * random_double(),
+                0.2,
+                b + 0.9 * random_double()
+            );
+
+            if (new Vec3(4, 0.2, 0).subtract(center).length > 0.9) {
+                let sphere_material;
+
+                if (chose_mat < 0.8) {
+                    const albedo = Vec3.random().multiply(Vec3.random());
+                    sphere_material = new Lambertian(albedo);
+                    world.add(new Sphere(center, 0.2, sphere_material));
+                } else if (chose_mat < 0.95) {
+                    const albedo = Vec3.randomMinMax(0.5, 1);
+                    const fuzz = random_double_mm(0, 0.5);
+                    sphere_material = new Metal(albedo, fuzz);
+                    world.add(new Sphere(center, 0.2, sphere_material));
+                } else {
+                    sphere_material = new Dielectric(1.5);
+                    world.add(new Sphere(center, 0.2, sphere_material));
+                }
+            }
+        }
+    }
+
+    const material1 = new Dielectric(1.5);
+    world.add(new Sphere(new Vec3(0, 1, 0), 1.0, material1));
+
+    const material2 = new Lambertian(new Vec3(0.4, 0.2, 0.1));
+    world.add(new Sphere(new Vec3(-4, 1, 0), 1.0, material2));
+
+    const material3 = new Metal(new Vec3(0.7, 0.6, 0.5), 0.0);
+    world.add(new Sphere(new Vec3(4, 1, 0), 1.0, material3));
+
+    return world;
+}
+
 async function render() {
     const aspect_ratio = 16.0 / 9.0;
-    const width = 512;
+    const width = 1000;
     const height = width / aspect_ratio;
-    const samples_per_pixel = 50;
-    const max_depth = 12;
+    const samples_per_pixel = 100;
+    const max_depth = 6;
 
     //canvas
     const canvas = document.getElementById("main_canvas");
@@ -45,26 +92,26 @@ async function render() {
     ctx.fillRect(0, 0, width, height);
 
     //world
-    let world = new HittableList();
+    let world = random_scene();
 
-    let material_ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
-    let material_center = new Lambertian(new Vec3(1, 0.1, 0.1));
-    let material_left = new Metal(new Vec3(0.8, 0.8, 0.8), 0.3);
-    let material_right = new Metal(new Vec3(0.8, 0.6, 0.2), 0.02);
-    let material_dielectric = new Dielectric(1.5);
+    // let material_ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
+    // let material_center = new Lambertian(new Vec3(1, 0.1, 0.1));
+    // let material_left = new Metal(new Vec3(0.8, 0.8, 0.8), 0.3);
+    // let material_right = new Metal(new Vec3(0.8, 0.6, 0.2), 0.02);
+    // let material_dielectric = new Dielectric(1.5);
 
-    world.add(new Sphere(new Vec3(0, -100.5, -1), 100, material_ground));
-    world.add(new Sphere(new Vec3(0, 0, -1), 0.5, material_center));
-    world.add(new Sphere(new Vec3(-1.0, 0.0, -1.0), 0.5, material_dielectric));
-    world.add(new Sphere(new Vec3(-1.0, 0.0, -1.0), -0.4, material_dielectric));
-    world.add(new Sphere(new Vec3(1.0, 0.0, -1.0), 0.5, material_right));
+    // world.add(new Sphere(new Vec3(0, -100.5, -1), 100, material_ground));
+    // world.add(new Sphere(new Vec3(0, 0, -1), 0.5, material_center));
+    // world.add(new Sphere(new Vec3(-1.0, 0.0, -1.0), 0.5, material_dielectric));
+    // world.add(new Sphere(new Vec3(-1.0, 0.0, -1.0), -0.4, material_dielectric));
+    // world.add(new Sphere(new Vec3(1.0, 0.0, -1.0), 0.5, material_right));
 
     //camera
-    const lookfrom = new Vec3(3, 3, 2);
-    const lookat = new Vec3(0, 0, -1);
+    const lookfrom = new Vec3(13, 2, 3);
+    const lookat = new Vec3(0, 0, 0);
     const vup = new Vec3(0, 1, 0);
-    const dist_to_focus = lookat.subtract(lookfrom).length;
-    const aperture = 1.0;
+    const dist_to_focus = 10.0;
+    const aperture = 0.1;
 
     const cam = new Camera(lookfrom, lookat, vup, 20, aperture, dist_to_focus);
 
