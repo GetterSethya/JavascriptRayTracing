@@ -32,7 +32,7 @@ async function render() {
     const aspect_ratio = 16.0 / 9.0;
     const width = 512;
     const height = width / aspect_ratio;
-    const samples_per_pixel = 30;
+    const samples_per_pixel = 50;
     const max_depth = 12;
 
     //canvas
@@ -60,7 +60,12 @@ async function render() {
     world.add(new Sphere(new Vec3(1.0, 0.0, -1.0), 0.5, material_right));
 
     //camera
-    const cam = new Camera(90);
+    const cam = new Camera(
+        new Vec3(-2, 2, 1),
+        new Vec3(0, 0, -1),
+        new Vec3(0, 1, 0),
+        20
+    );
 
     let imageData = new ImageData(width, height);
     let arrppm = [];

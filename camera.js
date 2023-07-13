@@ -1,5 +1,8 @@
 class Camera {
-    constructor(vfov = 40) {
+    constructor(lookfrom, lookat, vup, vfov = 40) {
+        this._lookfrom = lookfrom;
+        this._lookat = lookat;
+        this._vup = vup;
         this._vfov = vfov;
         const aspect_ratio = 16.0 / 9.0;
         const theta = degrees_to_radians(this._vfov);
@@ -9,13 +12,17 @@ class Camera {
         const viewport_width = aspect_ratio * viewport_height;
         const focal_length = 1.0;
 
-        this._origin = new Vec3(0, 0, 0);
-        this._horizontal = new Vec3(viewport_width, 0.0, 0.0);
-        this._vertical = new Vec3(0.0, viewport_height, 0.0);
+        const w = this._lookfrom.subtract(this._lookat).unit;
+        const u = this._vup.cross(w).unit;
+        const v = w.cross(u);
+
+        this._origin = this._lookfrom;
+        this._horizontal = u.multiply(viewport_width);
+        this._vertical = v.multiply(viewport_height);
         this._lower_left_corner = this._origin
             .subtract(this._horizontal.multiply(0.5))
             .subtract(this._vertical.multiply(0.5))
-            .subtract(new Vec3(0, 0, focal_length));
+            .subtract(w);
     }
     get vfov() {
         return this._vfov;
@@ -41,12 +48,12 @@ class Camera {
         this._origin = vector;
     }
 
-    get_ray(u, v) {
+    get_ray(s, t) {
         return new Ray(
             this._origin,
             this._lower_left_corner
-                .add(this._horizontal.multiply(u))
-                .add(this._vertical.multiply(v))
+                .add(this._horizontal.multiply(s))
+                .add(this._vertical.multiply(t))
                 .subtract(this._origin)
         );
     }
