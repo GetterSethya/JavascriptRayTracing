@@ -1,9 +1,11 @@
 class Camera {
-    constructor(lookfrom, lookat, vup, vfov = 40) {
+    constructor(lookfrom, lookat, vup, vfov = 40, aperture, focus_dist) {
         this._lookfrom = lookfrom;
         this._lookat = lookat;
         this._vup = vup;
         this._vfov = vfov;
+        this._aperture = aperture;
+        this._focus_dist = focus_dist;
         const aspect_ratio = 16.0 / 9.0;
         const theta = degrees_to_radians(this._vfov);
         const h = Math.tan(theta / 2);
@@ -12,17 +14,18 @@ class Camera {
         const viewport_width = aspect_ratio * viewport_height;
         const focal_length = 1.0;
 
-        const w = this._lookfrom.subtract(this._lookat).unit;
-        const u = this._vup.cross(w).unit;
-        const v = w.cross(u);
+        this._w = this._lookfrom.subtract(this._lookat).unit;
+        this._u = this._vup.cross(this._w).unit;
+        this._v = this._w.cross(this._u);
 
         this._origin = this._lookfrom;
-        this._horizontal = u.multiply(viewport_width);
-        this._vertical = v.multiply(viewport_height);
+        this._horizontal = this._u.multiply(this._focus_dist * viewport_width);
+        this._vertical = this._v.multiply(this._focus_dist * viewport_height);
         this._lower_left_corner = this._origin
             .subtract(this._horizontal.multiply(0.5))
             .subtract(this._vertical.multiply(0.5))
-            .subtract(w);
+            .subtract(this._w.multiply(this._focus_dist));
+        this._lens_radius = this._aperture / 2;
     }
     get vfov() {
         return this._vfov;
@@ -49,12 +52,16 @@ class Camera {
     }
 
     get_ray(s, t) {
+        const rd = Vec3.random_in_unit_disk().multiply(this._lens_radius);
+        const offset = this._u.multiply(rd.x).add(this._v.multiply(rd.y));
+
         return new Ray(
-            this._origin,
+            this._origin.add(offset),
             this._lower_left_corner
                 .add(this._horizontal.multiply(s))
                 .add(this._vertical.multiply(t))
                 .subtract(this._origin)
+                .subtract(offset)
         );
     }
 }

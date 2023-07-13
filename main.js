@@ -50,7 +50,7 @@ async function render() {
     let material_ground = new Lambertian(new Vec3(0.8, 0.8, 0.0));
     let material_center = new Lambertian(new Vec3(1, 0.1, 0.1));
     let material_left = new Metal(new Vec3(0.8, 0.8, 0.8), 0.3);
-    let material_right = new Metal(new Vec3(0.8, 0.6, 0.2), 1.0);
+    let material_right = new Metal(new Vec3(0.8, 0.6, 0.2), 0.02);
     let material_dielectric = new Dielectric(1.5);
 
     world.add(new Sphere(new Vec3(0, -100.5, -1), 100, material_ground));
@@ -60,12 +60,13 @@ async function render() {
     world.add(new Sphere(new Vec3(1.0, 0.0, -1.0), 0.5, material_right));
 
     //camera
-    const cam = new Camera(
-        new Vec3(-2, 2, 1),
-        new Vec3(0, 0, -1),
-        new Vec3(0, 1, 0),
-        20
-    );
+    const lookfrom = new Vec3(3, 3, 2);
+    const lookat = new Vec3(0, 0, -1);
+    const vup = new Vec3(0, 1, 0);
+    const dist_to_focus = lookat.subtract(lookfrom).length;
+    const aperture = 1.0;
+
+    const cam = new Camera(lookfrom, lookat, vup, 20, aperture, dist_to_focus);
 
     let imageData = new ImageData(width, height);
     let arrppm = [];

@@ -143,4 +143,19 @@ class Vec3 {
             return in_unit_sphere.negate;
         }
     }
+
+    static random_in_unit_disk() {
+        while (true) {
+            const p = new Vec3(
+                random_double_mm(-1, 1),
+                random_double_mm(-1, 1),
+                0
+            );
+            if (p.squaredLength >= 1) {
+                continue;
+            } else {
+                return p;
+            }
+        }
+    }
 }
