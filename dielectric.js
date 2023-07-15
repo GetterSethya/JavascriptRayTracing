@@ -40,11 +40,7 @@ class Dielectric extends Material {
             );
         }
 
-        // const refracted = Vec3.refract(
-        //     unit_direction,
-        //     rec.normal,
-        //     refraction_ratio
-        // );
+        scattered.time = r_in.time;
 
         return true;
     }

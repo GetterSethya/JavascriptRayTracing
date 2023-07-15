@@ -54,6 +54,7 @@ class Camera {
     get_ray(s, t) {
         const rd = Vec3.random_in_unit_disk().multiply(this._lens_radius);
         const offset = this._u.multiply(rd.x).add(this._v.multiply(rd.y));
+        const ray_time = random_double_mm(0.0, 1.0);
 
         return new Ray(
             this._origin.add(offset),
@@ -61,7 +62,8 @@ class Camera {
                 .add(this._horizontal.multiply(s))
                 .add(this._vertical.multiply(t))
                 .subtract(this._origin)
-                .subtract(offset)
+                .subtract(offset),
+            ray_time
         );
     }
 }

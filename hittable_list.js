@@ -2,6 +2,7 @@ class HittableList extends Hittable {
     constructor() {
         super();
         this._objects = [];
+        this._bbox = null;
     }
 
     get objects() {
@@ -14,6 +15,15 @@ class HittableList extends Hittable {
 
     add(obj) {
         this._objects.push(obj);
+        if (!this._bbox) {
+            this._bbox = obj.bounding_box();
+        } else {
+            this._bbox = AABB.merge(this._bbox, obj.bounding_box());
+        }
+    }
+
+    bounding_box() {
+        return this._bbox;
     }
 
     clear() {

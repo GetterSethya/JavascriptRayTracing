@@ -12,6 +12,7 @@ class Lambertian extends Material {
         }
         scattered.origin = rec.p;
         scattered.direction = scatter_direction;
+        scattered.time = r_in.time;
         attenuation.x = this._albedo.x;
         attenuation.y = this._albedo.y;
         attenuation.z = this._albedo.z;

@@ -18,6 +18,7 @@ class Metal extends Material {
         scattered.direction = reflected.add(
             Vec3.randomInUnitSphere().multiply(this._fuzz)
         );
+        scattered.time = r_in.time;
 
         attenuation.x = this._albedo.x;
         attenuation.y = this._albedo.y;

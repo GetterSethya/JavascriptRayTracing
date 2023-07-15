@@ -26,6 +26,11 @@ class Interval {
         return this._min < x && x < this._max;
     }
 
+    expand(delta) {
+        const padding = delta / 2;
+        return new Interval(min - padding, max + padding);
+    }
+
     static empty() {
         return new Interval(Infinity, -Infinity);
     }

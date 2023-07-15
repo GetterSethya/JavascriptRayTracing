@@ -1,42 +1,28 @@
-class Sphere extends Hittable {
-    constructor(center, radius, material) {
-        super();
-        this._center = center;
-        this._radius = radius;
-        this._material = material;
-        this._rvec = new Vec3(this._radius, this._radius, this._radius);
-        this._bbox = AABB.fromPoints(
+class MovingSphere extends Sphere {
+    constructor(center1, center2, radius, material) {
+        super(center1, radius, material);
+        this._center2 = center2;
+        this._centerVec = this._center2.subtract(this._center);
+        this._isMoving = true;
+        this._box1 = AABB.fromPoints(
             this._center.subtract(this._rvec),
             this._center.add(this._rvec)
         );
+        this._box2 = AABB.fromPoints(
+            this._center2.subtract(this._rvec),
+            this._center2.add(this._rvec)
+        );
+
+        this._bbox = AABB.merge(this._box1, this._box2);
     }
 
-    get center() {
-        return this._center;
-    }
-    get radius() {
-        return this._radius;
-    }
-    get material() {
-        return this._material;
-    }
-
-    set material(mat) {
-        return (this._material = mat);
-    }
-    set center(value) {
-        this._center = value;
-    }
-    set radius(value) {
-        this._radius = value;
-    }
-
-    bounding_box() {
-        return this._bbox;
+    center(time) {
+        return this._center.add(this._centerVec.multiply(time));
     }
 
     hit(r, ray_t, rec) {
-        const oc = r.origin.subtract(this.center);
+        const center = this._isMoving ? this.center(r.time) : this._center;
+        const oc = r.origin.subtract(center);
         const a = r.direction.dot(r.direction);
         const half_b = oc.dot(r.direction);
         const c = oc.squaredLength - this._radius * this._radius;
