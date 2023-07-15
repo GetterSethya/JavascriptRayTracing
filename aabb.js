@@ -87,6 +87,11 @@ class AABB {
     }
 
     static merge(box0, box1) {
+        // console.log(box0);
+        // console.log(box1);
+        if (!box0) return box1;
+        if (!box1) return box0;
+
         const x = new Interval(
             Math.min(box0.x.min, box1.x.min),
             Math.max(box0.x.max, box1.x.max)

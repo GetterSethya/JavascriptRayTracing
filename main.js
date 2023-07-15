@@ -29,39 +29,39 @@ function ray_color(r, world, depth) {
 }
 
 function random_scene() {
-    const world = new HittableList();
+    let world = new HittableList();
 
     const ground_material = new Lambertian(new Vec3(0.5, 0.5, 0.5));
     world.add(new Sphere(new Vec3(0, -1000, 0), 1000, ground_material));
 
-    // for (let a = -11; a < 11; a++) {
-    //     for (let b = -11; b < 11; b++) {
-    //         const chose_mat = random_double();
-    //         const center = new Vec3(
-    //             a + 0.9 * random_double(),
-    //             0.2,
-    //             b + 0.9 * random_double()
-    //         );
+    for (let a = -5; a < 5; a++) {
+        for (let b = -5; b < 5; b++) {
+            const chose_mat = random_double();
+            const center = new Vec3(
+                a + 0.9 * random_double(),
+                0.2,
+                b + 0.9 * random_double()
+            );
 
-    //         if (new Vec3(4, 0.2, 0).subtract(center).length > 0.9) {
-    //             let sphere_material;
+            if (new Vec3(4, 0.2, 0).subtract(center).length > 0.9) {
+                let sphere_material;
 
-    //             if (chose_mat < 0.8) {
-    //                 const albedo = Vec3.random().multiply(Vec3.random());
-    //                 sphere_material = new Lambertian(albedo);
-    //                 world.add(new Sphere(center, 0.2, sphere_material));
-    //             } else if (chose_mat < 0.95) {
-    //                 const albedo = Vec3.randomMinMax(0.5, 1);
-    //                 const fuzz = random_double_mm(0, 0.5);
-    //                 sphere_material = new Metal(albedo, fuzz);
-    //                 world.add(new Sphere(center, 0.2, sphere_material));
-    //             } else {
-    //                 sphere_material = new Dielectric(1.5);
-    //                 world.add(new Sphere(center, 0.2, sphere_material));
-    //             }
-    //         }
-    //     }
-    // }
+                if (chose_mat < 0.8) {
+                    const albedo = Vec3.random().multiply(Vec3.random());
+                    sphere_material = new Lambertian(albedo);
+                    world.add(new Sphere(center, 0.2, sphere_material));
+                } else if (chose_mat < 0.95) {
+                    const albedo = Vec3.randomMinMax(0.5, 1);
+                    const fuzz = random_double_mm(0, 0.5);
+                    sphere_material = new Metal(albedo, fuzz);
+                    world.add(new Sphere(center, 0.2, sphere_material));
+                } else {
+                    sphere_material = new Dielectric(1.5);
+                    world.add(new Sphere(center, 0.2, sphere_material));
+                }
+            }
+        }
+    }
 
     const center = new Vec3(4, 1, 0);
     const center2 = new Vec3(0.0, random_double_mm(0.0, 0.5, 0.0));
@@ -75,6 +75,8 @@ function random_scene() {
     const material3 = new Metal(new Vec3(0.7, 0.6, 0.5), 0.0);
     world.add(new Sphere(center, 1.0, material3));
 
+    // world = new HittableList(new BVHNode(world));
+    // console.log(world);
     return world;
 }
 
