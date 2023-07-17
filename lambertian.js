@@ -1,7 +1,11 @@
 class Lambertian extends Material {
-    constructor(albedo) {
+    constructor(a) {
         super();
-        this._albedo = albedo;
+        if (a instanceof Texture) {
+            this._albedo = a;
+        } else {
+            this._albedo = new SolidColor(a);
+        }
     }
 
     scatter(r_in, rec, attenuation, scattered) {
@@ -13,9 +17,10 @@ class Lambertian extends Material {
         scattered.origin = rec.p;
         scattered.direction = scatter_direction;
         scattered.time = r_in.time;
-        attenuation.x = this._albedo.x;
-        attenuation.y = this._albedo.y;
-        attenuation.z = this._albedo.z;
+        const colval = this._albedo.value(rec.u, rec.v, rec.p);
+        attenuation.x = colval.x;
+        attenuation.y = colval.y;
+        attenuation.z = colval.z;
 
         // console.log(attenuation);
         return true;

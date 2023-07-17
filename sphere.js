@@ -61,7 +61,16 @@ class Sphere extends Hittable {
             .subtract(this._center)
             .divide(this._radius);
         rec.set_face_normal(r, outward_normal);
+        Sphere.get_sphere_uv(outward_normal, rec.u, rec.v);
         rec.material = this._material;
         return true;
+    }
+
+    static get_sphere_uv(p, u, v) {
+        const theta = Math.acos(-p.y);
+        const phi = Math.atan2(-p.x, p.x) + Math.PI;
+
+        u = phi / (2 * Math.PI);
+        v = theta / Math.PI;
     }
 }

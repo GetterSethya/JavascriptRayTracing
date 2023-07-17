@@ -18,6 +18,10 @@ class Interval {
         this._max = value;
     }
 
+    size() {
+        return this._max - this._min;
+    }
+
     contains(x) {
         return this._min <= x && x <= this._max;
     }
@@ -28,7 +32,7 @@ class Interval {
 
     expand(delta) {
         const padding = delta / 2;
-        return new Interval(min - padding, max + padding);
+        return new Interval(this._min - padding, this._max + padding);
     }
 
     static empty() {

@@ -5,6 +5,8 @@ class HitRecord {
         this._t;
         this._front_face;
         this._material;
+        this._u;
+        this._v;
     }
 
     get p() {
