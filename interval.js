@@ -42,4 +42,8 @@ class Interval {
     static universe() {
         return new Interval(-Infinity, Infinity);
     }
+
+    static add(ival, displacement) {
+        return new Interval(ival.min + displacement, ival.max + displacement);
+    }
 }

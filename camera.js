@@ -1,18 +1,25 @@
 class Camera {
-    constructor(lookfrom, lookat, vup, vfov = 40, aperture, focus_dist) {
+    constructor(
+        lookfrom,
+        lookat,
+        vup,
+        vfov = 40,
+        aperture,
+        focus_dist,
+        aspect_ratio = 16 / 9
+    ) {
         this._lookfrom = lookfrom;
         this._lookat = lookat;
         this._vup = vup;
         this._vfov = vfov;
         this._aperture = aperture;
         this._focus_dist = focus_dist;
-        const aspect_ratio = 16.0 / 9.0;
+        this._aspect_ratio = aspect_ratio;
         const theta = degrees_to_radians(this._vfov);
         const h = Math.tan(theta / 2);
 
         const viewport_height = 2.0 * h;
-        const viewport_width = aspect_ratio * viewport_height;
-        const focal_length = 1.0;
+        const viewport_width = this._aspect_ratio * viewport_height;
 
         this._w = this._lookfrom.subtract(this._lookat).unit;
         this._u = this._vup.cross(this._w).unit;
@@ -26,6 +33,10 @@ class Camera {
             .subtract(this._vertical.multiply(0.5))
             .subtract(this._w.multiply(this._focus_dist));
         this._lens_radius = this._aperture / 2;
+    }
+
+    get aspect_ratio() {
+        return this._aspect_ratio;
     }
     get vfov() {
         return this._vfov;
@@ -41,6 +52,10 @@ class Camera {
     }
     get lower_left_corner() {
         return this._lower_left_corner;
+    }
+
+    set aspect_ratio(ar) {
+        this._aspect_ratio = ar;
     }
 
     set vfov(fov) {

@@ -107,4 +107,12 @@ class AABB {
 
         return new AABB(x, y, z); //
     }
+
+    static add(bbox, offset) {
+        return new AABB(
+            Interval.add(bbox.x, offset.x),
+            Interval.add(bbox.y, offset.y),
+            Interval.add(bbox.z, offset.z)
+        );
+    }
 }
